@@ -7,6 +7,7 @@
     
     <title>Monitoring Page</title>
     <style>
+        /* This style now applies to the dynamically created links */
         a.show-href::after {
             content: attr(href);
         }
@@ -17,38 +18,61 @@
     <h1 id="page-title"></h1>
     <p>This page exists to monitor a specific WordPress version for security scanning.</p>
     <p><strong>Reported Version:</strong> <span id="version-display"></span></p>
-    <ul>
-        <li><a class="show-href" href="wpcheck.html"></a></li>
-        <li><a class="show-href" href="wpcheck.html?version=6.8.2"></a></li>
-        <li><a class="show-href" href="wpcheck.html?version=6.3.2"></a></li>
+
+    <h3>Test Links:</h3>
+    <ul id="test-links-list">
+        <li><a href="wpcheck.html">wpcheck.html (default should have no meta tag)</a></li>
+        <li><a href="wpcheck.html?version=1.0.0">wpcheck.html?version=1.0.0 (unknown version should have no meta tag)</a></li>
     </ul>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
-            // 1. Get the URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const versionNumber = urlParams.get('version'); // Will be null if parameter is not found
+            const allowedVersions = ['6.8.2', '6.3.2'];
 
-            // 2. Find the elements we will be working with
+            // --- Part 1: Dynamically build the list of test links ---
+            const linkList = document.getElementById('test-links-list');
+            
+            allowedVersions.forEach(version => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                
+                // Set the class and href for the new link
+                link.className = 'show-href';
+                link.href = `wpcheck.html?version=${version}`;
+                
+                // Add the new link to the list
+                listItem.appendChild(link);
+                linkList.appendChild(listItem);
+            });
+
+            // --- Part 2: Process the current URL's version parameter ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const versionNumber = urlParams.get('version');
+
             const metaTag = document.getElementById('generator-meta');
             const pageTitle = document.getElementById('page-title');
             const versionDisplay = document.getElementById('version-display');
 
-            // 3. Check if the 'version' parameter exists
-            if (versionNumber) {
-                // If a version is provided, build the page as normal
+            if (versionNumber && allowedVersions.includes(versionNumber)) {
+                // A valid, monitored version was found
                 const metaContent = 'WordPress ' + versionNumber;
                 metaTag.setAttribute('content', metaContent);
 
                 document.title = 'Monitoring WP ' + versionNumber;
                 pageTitle.textContent = 'Monitoring WordPress ' + versionNumber;
                 versionDisplay.textContent = versionNumber;
-            } else {
-                // If no version is provided, remove the meta tag and show a message
-                metaTag.remove(); // This completely removes the meta tag from the document
 
-                document.title = 'Monitoring WP with no meta tag';
-                pageTitle.textContent = 'Monitoring WP with no meta tag.';
+            } else {
+                // The version is either missing or not on our list
+                metaTag.remove(); 
+
+                document.title = 'Version Not Monitored';
+                if (versionNumber) {
+                    pageTitle.textContent = 'Version ' + versionNumber + ' is not actively monitored.';
+                } else {
+                    pageTitle.textContent = 'No version specified.';
+                }
                 versionDisplay.textContent = 'N/A';
             }
         });
