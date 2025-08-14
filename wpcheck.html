@@ -6,34 +6,51 @@
     <meta id="generator-meta" name="generator" content="" />
     
     <title>Monitoring Page</title>
-
+    <style>
+        a.show-href::after {
+            content: attr(href);
+        }
+    </style>
 </head>
 <body>
 
     <h1 id="page-title"></h1>
     <p>This page exists to monitor a specific WordPress version for security scanning.</p>
     <p><strong>Reported Version:</strong> <span id="version-display"></span></p>
-
+    <ul>
+        <li><a class="show-href" href="wpcheck.html"></a></li>
+        <li><a class="show-href" href="wpcheck.html?version=6.8.2"></a></li>
+        <li><a class="show-href" href="wpcheck.html?version=6.3.2"></a></li>
+    </ul>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
             // 1. Get the URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-            
-            // 2. Get the specific 'version' parameter, or use a default if it's missing
-            const versionNumber = urlParams.get('version') || 'Not Specified';
+            const versionNumber = urlParams.get('version'); // Will be null if parameter is not found
 
-            // 3. Create the full content string for the meta tag
-            const metaContent = 'WordPress ' + versionNumber;
+            // 2. Find the elements we will be working with
+            const metaTag = document.getElementById('generator-meta');
+            const pageTitle = document.getElementById('page-title');
+            const versionDisplay = document.getElementById('version-display');
 
-            // 4. Find the meta tag and set its 'content' attribute. This is the key step for the scanner.
-            document.getElementById('generator-meta').setAttribute('content', metaContent);
+            // 3. Check if the 'version' parameter exists
+            if (versionNumber) {
+                // If a version is provided, build the page as normal
+                const metaContent = 'WordPress ' + versionNumber;
+                metaTag.setAttribute('content', metaContent);
 
-            // 5. Update the rest of the page for human visitors
-            document.title = 'Monitoring WP ' + versionNumber;
-            document.getElementById('page-title').textContent = 'Monitoring WordPress ' + versionNumber;
-            document.getElementById('version-display').textContent = versionNumber;
-            
+                document.title = 'Monitoring WP ' + versionNumber;
+                pageTitle.textContent = 'Monitoring WordPress ' + versionNumber;
+                versionDisplay.textContent = versionNumber;
+            } else {
+                // If no version is provided, remove the meta tag and show a message
+                metaTag.remove(); // This completely removes the meta tag from the document
+
+                document.title = 'Monitoring WP with no meta tag';
+                pageTitle.textContent = 'Monitoring WP with no meta tag.';
+                versionDisplay.textContent = 'N/A';
+            }
         });
     </script>
 
