@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta id="generator-meta" name="generator" content="" />
+    
+    <title>Monitoring Page</title>
+
+</head>
+<body>
+
+    <h1 id="page-title"></h1>
+    <p>This page exists to monitor a specific WordPress version for security scanning.</p>
+    <p><strong>Reported Version:</strong> <span id="version-display"></span></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Get the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // 2. Get the specific 'version' parameter, or use a default if it's missing
+            const versionNumber = urlParams.get('version') || 'Not Specified';
+
+            // 3. Create the full content string for the meta tag
+            const metaContent = 'WordPress ' + versionNumber;
+
+            // 4. Find the meta tag and set its 'content' attribute. This is the key step for the scanner.
+            document.getElementById('generator-meta').setAttribute('content', metaContent);
+
+            // 5. Update the rest of the page for human visitors
+            document.title = 'Monitoring WP ' + versionNumber;
+            document.getElementById('page-title').textContent = 'Monitoring WordPress ' + versionNumber;
+            document.getElementById('version-display').textContent = versionNumber;
+            
+        });
+    </script>
+
+</body>
+</html>
