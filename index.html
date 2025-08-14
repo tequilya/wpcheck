@@ -3,6 +3,11 @@
 <head>
     <title>Primary WP Version</title>
     <meta name="generator" content="WordPress 6.8.2" />
+    <style>
+        a.show-href::after {
+            content: attr(href);
+        }
+    </style>
 </head>
 <body>
     <h1>Monitoring WordPress Versions</h1>
@@ -10,7 +15,7 @@
     <ul>
         <li><a href="/wp672.html">Monitor Version 6.7.2</a></li>
         <li><a href="/wp655.html">Monitor Version 6.5.5</a></li>
-        <li><a href="wpcheck.html?version=6.3.2" /></li>
+        <li><a class="show-href" href="wpcheck.html?version=6.3.2"></a></li>
     </ul>
 </body>
 </html>
