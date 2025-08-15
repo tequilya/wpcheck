@@ -1,0 +1,11 @@
+# Cloudflare / netlify headers (no equivalent for github pages)
+/*
+  Content-Security-Policy: frame-ancestors 'self';object-src 'self';script-src * 'unsafe-eval' 'unsafe-inline' data: blob:;
+  X-Frame-Options: "SAMEORIGIN"
+  X-Content-Type-Options: nosniff
+
+  # These headers are mentioned by securityheaders but not having them doesn't stop an A rating
+  # (only adding headers as required to avoid breaking things for no reason)
+  # and securityscorecard doesn't mention them at all yet:
+  ##Header set Referrer-Policy: "strict-origin-when-cross-origin"
+  ##Header set Referrer-Policy: "no-referrer-when-downgrade"
